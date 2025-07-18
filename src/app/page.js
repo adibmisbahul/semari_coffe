@@ -1,103 +1,138 @@
+"use client";
+import { useEffect, useState } from "react";
+import supabase from "@/lib/supabaseClient";
 import Image from "next/image";
 
 export default function Home() {
-  return (
-    <div className="font-sans grid grid-rows-[20px_1fr_20px] items-center justify-items-center min-h-screen p-8 pb-20 gap-16 sm:p-20">
-      <main className="flex flex-col gap-[32px] row-start-2 items-center sm:items-start">
-        <Image
-          className="dark:invert"
-          src="/next.svg"
-          alt="Next.js logo"
-          width={180}
-          height={38}
-          priority
-        />
-        <ol className="font-mono list-inside list-decimal text-sm/6 text-center sm:text-left">
-          <li className="mb-2 tracking-[-.01em]">
-            Get started by editing{" "}
-            <code className="bg-black/[.05] dark:bg-white/[.06] font-mono font-semibold px-1 py-0.5 rounded">
-              src/app/page.js
-            </code>
-            .
-          </li>
-          <li className="tracking-[-.01em]">
-            Save and see your changes instantly.
-          </li>
-        </ol>
+  const [menus, setMenus] = useState([]);
+  const [cart, setCart] = useState([]);
+  const [showPopUp, setShowPopUp] = useState(false);
+  const [customerName, setCustomerName] = useState([]);
 
-        <div className="flex gap-4 items-center flex-col sm:flex-row">
-          <a
-            className="rounded-full border border-solid border-transparent transition-colors flex items-center justify-center bg-foreground text-background gap-2 hover:bg-[#383838] dark:hover:bg-[#ccc] font-medium text-sm sm:text-base h-10 sm:h-12 px-4 sm:px-5 sm:w-auto"
-            href="https://vercel.com/new?utm_source=create-next-app&utm_medium=appdir-template-tw&utm_campaign=create-next-app"
-            target="_blank"
-            rel="noopener noreferrer"
-          >
+  useEffect(() => {
+    const fetchMenus = async () => {
+      const { data, error } = await supabase.from("product").select();
+      if (error) console.error(error);
+      else setMenus(data);
+    };
+    console.log(menus);
+    fetchMenus();
+  }, [supabase]);
+
+  const addToCart = (item) => {
+    setCart((prev) => [...prev, item]);
+  };
+
+  const handleShowPopUP = () => {
+    setShowPopUp(true);
+  };
+
+  const totalHarga = cart.reduce((total, item) => total + item.price, 0);
+
+  const clocePopUp = () => {
+    setCart([]);
+    setShowPopUp(false);
+  };
+
+  const handleCustomerName = (e) => {
+    setCustomerName(e.target.value);
+  };
+
+  const product = [
+    { title: "matcha", price: 12000 },
+    { title: "latte", price: 12000 },
+  ];
+
+  const paymentProces = async () => {
+    const { data, error } = await supabase.from("transaction").insert(
+      cart.map((item) => ({
+        title: item.title,
+        price: item.price,
+        name: customerName,
+      }))
+    );
+
+    if (error) {
+      console.error("Insert error:", error.message);
+    } else {
+      alert("payment succes");
+      setCart([]);
+      setShowPopUp(false);
+    }
+  };
+
+  useEffect(() => {
+    // console.log(cart);
+    // console.log(menus);
+    // console.log(totalHarga);
+    console.log(product);
+  });
+
+  return (
+    <div className="flex flex-wrap justify-center gap-2 pt-2">
+      {menus.map((menu) => {
+        return (
+          <div key={menu.id} onClick={() => addToCart(menu)}>
             <Image
-              className="dark:invert"
-              src="/vercel.svg"
-              alt="Vercel logomark"
-              width={20}
-              height={20}
+              src={menu.image}
+              width={110}
+              height={100}
+              alt="halo"
+              className="rounded h-[200px] object-cover"
             />
-            Deploy now
-          </a>
-          <a
-            className="rounded-full border border-solid border-black/[.08] dark:border-white/[.145] transition-colors flex items-center justify-center hover:bg-[#f2f2f2] dark:hover:bg-[#1a1a1a] hover:border-transparent font-medium text-sm sm:text-base h-10 sm:h-12 px-4 sm:px-5 w-full sm:w-auto md:w-[158px]"
-            href="https://nextjs.org/docs?utm_source=create-next-app&utm_medium=appdir-template-tw&utm_campaign=create-next-app"
-            target="_blank"
-            rel="noopener noreferrer"
+            <h1>{menu.title}</h1>
+            <p className="text-xs">{menu.price}</p>
+            <button onClick={() => addToCart(menu)}>+</button>
+          </div>
+        );
+      })}
+      {showPopUp && (
+        <div className="flex flex-col w-[90%] h-[50vh] bg-white shadow border absolute top-40 p-2 rounded justify-center">
+          <div>
+            <h1 onClick={clocePopUp}>x</h1>
+          </div>
+          <div>
+            <input
+              type="text"
+              className="h-[5vh] w-full border rounded border-black"
+              placeholder="atas nama"
+              onChange={handleCustomerName}
+            />
+          </div>
+          <div className="w-full h-[70%]">
+            {cart.map((item, index) => {
+              return (
+                <div className="flex justify-start gap-6" key={index}>
+                  <ul className="flex gap-2">
+                    <li key={index} className="flex items-center gap-2 mb-2">
+                      <img
+                        src={item.image}
+                        alt={item.title}
+                        className="w-10 h-10 object-cover"
+                      />
+                      <span>{item.title}</span>
+                      <span className="ml-auto">{item.price}</span>
+                    </li>
+                  </ul>
+                </div>
+              );
+            })}
+          </div>
+
+          <button
+            onClick={paymentProces}
+            className="bg-blue-600 w-[100%] text-center rounded text-white h-[5vh]"
           >
-            Read our docs
-          </a>
+            proces
+          </button>
         </div>
-      </main>
-      <footer className="row-start-3 flex gap-[24px] flex-wrap items-center justify-center">
-        <a
-          className="flex items-center gap-2 hover:underline hover:underline-offset-4"
-          href="https://nextjs.org/learn?utm_source=create-next-app&utm_medium=appdir-template-tw&utm_campaign=create-next-app"
-          target="_blank"
-          rel="noopener noreferrer"
-        >
-          <Image
-            aria-hidden
-            src="/file.svg"
-            alt="File icon"
-            width={16}
-            height={16}
-          />
-          Learn
-        </a>
-        <a
-          className="flex items-center gap-2 hover:underline hover:underline-offset-4"
-          href="https://vercel.com/templates?framework=next.js&utm_source=create-next-app&utm_medium=appdir-template-tw&utm_campaign=create-next-app"
-          target="_blank"
-          rel="noopener noreferrer"
-        >
-          <Image
-            aria-hidden
-            src="/window.svg"
-            alt="Window icon"
-            width={16}
-            height={16}
-          />
-          Examples
-        </a>
-        <a
-          className="flex items-center gap-2 hover:underline hover:underline-offset-4"
-          href="https://nextjs.org?utm_source=create-next-app&utm_medium=appdir-template-tw&utm_campaign=create-next-app"
-          target="_blank"
-          rel="noopener noreferrer"
-        >
-          <Image
-            aria-hidden
-            src="/globe.svg"
-            alt="Globe icon"
-            width={16}
-            height={16}
-          />
-          Go to nextjs.org →
-        </a>
-      </footer>
+      )}
+      <div
+        className="flex fixed top-170 bg-blue-400 w-3/4 justify-center text-white h-[6vh] items-center rounded gap-6"
+        onClick={handleShowPopUP}
+      >
+        <h1>Total : {totalHarga}</h1>
+      </div>
     </div>
   );
 }
