@@ -67,22 +67,26 @@ export default function Home() {
 
   return (
     <div
-      className="flex flex-wrap justify-center gap-2 pt-2 h-[100svh] overflow-y-hidden
+      className="bg-slate-950 flex flex-wrap justify-center gap-2 pt-2 h-[100svh] overflow-y-hidden
     "
     >
       <div
-        className="flex flex-wrap justify-center gap-2 pt-2 overflow-auto h-[80vh]
-"
+        className="flex flex-wrap justify-center gap-1 pt-2 overflow-auto h-[80vh]
+text-white "
       >
         {menus.map((menu) => {
           return (
-            <div key={menu.id} onClick={() => addToCart(menu)}>
+            <div
+              key={menu.id}
+              onClick={() => addToCart(menu)}
+              className="border rounded border-zinc-600 p-2"
+            >
               <Image
                 src={menu.image}
                 width={110}
                 height={100}
                 alt="halo"
-                className="rounded h-[200px] object-cover"
+                className="rounded h-[150px] object-cover"
               />
               <h1>{menu.title}</h1>
               <p className="text-xs">{menu.price}</p>
@@ -93,19 +97,19 @@ export default function Home() {
       </div>
 
       {showPopUp && (
-        <div className="flex flex-col w-[90%] h-[50vh] bg-white shadow border absolute top-40 p-2 rounded justify-center">
+        <div className="text-white flex flex-col w-[90%] h-[50vh] bg-slate-950 shadow border absolute top-40 p-2 rounded justify-center">
           <div>
             <h1 onClick={clocePopUp}>x</h1>
           </div>
           <div>
             <input
               type="text"
-              className="h-[5vh] w-full border rounded border-black"
+              className="h-[5vh] w-full border rounded border-zinc-600"
               placeholder="atas nama"
               onChange={handleCustomerName}
             />
           </div>
-          <div className="w-full h-[70%]">
+          <div className="w-full h-[70%] pt-2">
             {cart.map((item, index) => {
               return (
                 <div className="flex justify-start gap-6" key={index}>
@@ -114,7 +118,7 @@ export default function Home() {
                       <img
                         src={item.image}
                         alt={item.title}
-                        className="w-10 h-10 object-cover"
+                        className="w-10 h-10 object-cover rounded"
                       />
                       <span>{item.title}</span>
                       <span className="ml-auto">{item.price}</span>
@@ -135,7 +139,7 @@ export default function Home() {
       )}
       <div className="w-full h-[7vh]  flex items-center justify-center gap-2">
         <div
-          className="flex bg-blue-400 w-3/4 justify-center text-white h-[7vh] items-center rounded gap-6"
+          className="flex bg-blue-600 w-3/4 justify-center text-white h-[7vh] items-center rounded gap-6"
           onClick={handleShowPopUP}
         >
           <h1>Total : {totalHarga}</h1>
