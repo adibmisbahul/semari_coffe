@@ -44,7 +44,7 @@ export default function Home() {
   ];
 
   const paymentProces = async () => {
-    const { data, error } = await supabase.from("transaction").insert(
+    const { error } = await supabase.from("transaction").insert(
       cart.map((item) => ({
         title: item.title,
         price: item.price,
@@ -62,30 +62,36 @@ export default function Home() {
   };
 
   useEffect(() => {
-    // console.log(cart);
-    // console.log(menus);
-    // console.log(totalHarga);
     console.log(product);
   });
 
   return (
-    <div className="flex flex-wrap justify-center gap-2 pt-2">
-      {menus.map((menu) => {
-        return (
-          <div key={menu.id} onClick={() => addToCart(menu)}>
-            <Image
-              src={menu.image}
-              width={110}
-              height={100}
-              alt="halo"
-              className="rounded h-[200px] object-cover"
-            />
-            <h1>{menu.title}</h1>
-            <p className="text-xs">{menu.price}</p>
-            <button onClick={() => addToCart(menu)}>+</button>
-          </div>
-        );
-      })}
+    <div
+      className="flex flex-wrap justify-center gap-2 pt-2 h-[100svh] overflow-y-hidden
+    "
+    >
+      <div
+        className="flex flex-wrap justify-center gap-2 pt-2 overflow-auto h-[80vh]
+"
+      >
+        {menus.map((menu) => {
+          return (
+            <div key={menu.id} onClick={() => addToCart(menu)}>
+              <Image
+                src={menu.image}
+                width={110}
+                height={100}
+                alt="halo"
+                className="rounded h-[200px] object-cover"
+              />
+              <h1>{menu.title}</h1>
+              <p className="text-xs">{menu.price}</p>
+              <button onClick={() => addToCart(menu)}>+</button>
+            </div>
+          );
+        })}
+      </div>
+
       {showPopUp && (
         <div className="flex flex-col w-[90%] h-[50vh] bg-white shadow border absolute top-40 p-2 rounded justify-center">
           <div>
@@ -127,11 +133,16 @@ export default function Home() {
           </button>
         </div>
       )}
-      <div
-        className="flex fixed top-170 bg-blue-400 w-3/4 justify-center text-white h-[6vh] items-center rounded gap-6"
-        onClick={handleShowPopUP}
-      >
-        <h1>Total : {totalHarga}</h1>
+      <div className="w-full h-[7vh]  flex items-center justify-center gap-2">
+        <div
+          className="flex bg-blue-400 w-3/4 justify-center text-white h-[7vh] items-center rounded gap-6"
+          onClick={handleShowPopUP}
+        >
+          <h1>Total : {totalHarga}</h1>
+        </div>
+        <div className="bg-blue-600 h-[7vh] text-white w-[10vw] flex items-center justify-center rounded">
+          <a href="/dashboard ">list</a>
+        </div>
       </div>
     </div>
   );
