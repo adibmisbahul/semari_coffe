@@ -55,6 +55,7 @@ export default function Home() {
         console.error("Insert error:", error.message);
       } else {
         alert("payment succes");
+        setCustomerName("");
         setCart([]);
         setShowPopUp(false);
       }
