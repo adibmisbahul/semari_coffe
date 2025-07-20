@@ -15,17 +15,36 @@ ModuleRegistry.registerModules([AllCommunityModule]);
 const Dashboard = () => {
   const [orderToday, setOrderToday] = useState();
   const [uangMasuk, setUangMasuk] = useState();
-  const gridStyle = useMemo(() => ({ height: "70%", width: "90%" }), []);
+  const gridStyle = useMemo(() => ({ height: "70%", width: "95%" }), []);
+
+  // useEffect(() => {
+  //   const fetchData = async () => {
+  //     const { data, error } = await supabase.from("transaction").select();
+  //     if (error) alert(error);
+  //     else setRowData(data);
+  //     setOrderToday(data.length);
+  //     console.log(data);
+  //   };
+  //   fetchData();
+  // }, [supabase]);
 
   useEffect(() => {
-    const fetchData = async () => {
-      const { data, error } = await supabase.from("transaction").select();
-      if (error) alert(error);
-      else setRowData(data);
-      setOrderToday(data.length);
-      console.log(data);
+    const filterOrderToday = async () => {
+      const today = new Date().toISOString().split("T")[0];
+      console.log(today);
+      const { data, error } = await supabase
+        .from("transaction")
+        .select()
+        .eq("order_date", today);
+      if (error) {
+        console.log(error);
+      } else {
+        setRowData(data);
+        setOrderToday(data.length);
+      }
     };
-    fetchData();
+
+    filterOrderToday();
   }, [supabase]);
 
   const [rowData, setRowData] = useState([

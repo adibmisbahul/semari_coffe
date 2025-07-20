@@ -7,7 +7,7 @@ export default function Home() {
   const [menus, setMenus] = useState([]);
   const [cart, setCart] = useState([]);
   const [showPopUp, setShowPopUp] = useState(false);
-  const [customerName, setCustomerName] = useState([]);
+  const [customerName, setCustomerName] = useState();
 
   useEffect(() => {
     const fetchMenus = async () => {
@@ -38,32 +38,28 @@ export default function Home() {
     setCustomerName(e.target.value);
   };
 
-  const product = [
-    { title: "matcha", price: 12000 },
-    { title: "latte", price: 12000 },
-  ];
-
   const paymentProces = async () => {
-    const { error } = await supabase.from("transaction").insert(
-      cart.map((item) => ({
-        title: item.title,
-        price: item.price,
-        name: customerName,
-      }))
-    );
-
-    if (error) {
-      console.error("Insert error:", error.message);
+    if (!customerName || customerName.trim() === "") {
+      alert("Nama tidak bolek kosong");
+      return;
     } else {
-      alert("payment succes");
-      setCart([]);
-      setShowPopUp(false);
+      const { error } = await supabase.from("transaction").insert(
+        cart.map((item) => ({
+          title: item.title,
+          price: item.price,
+          name: customerName,
+        }))
+      );
+
+      if (error) {
+        console.error("Insert error:", error.message);
+      } else {
+        alert("payment succes");
+        setCart([]);
+        setShowPopUp(false);
+      }
     }
   };
-
-  useEffect(() => {
-    console.log(product);
-  });
 
   return (
     <div
