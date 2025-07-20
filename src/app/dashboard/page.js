@@ -1,4 +1,5 @@
 "use client";
+import "../dashboard/agGrid.css";
 import {
   AllCommunityModule,
   ModuleRegistry,
@@ -14,28 +15,24 @@ ModuleRegistry.registerModules([AllCommunityModule]);
 
 const Dashboard = () => {
   const [orderToday, setOrderToday] = useState();
-  const [uangMasuk, setUangMasuk] = useState();
   const gridStyle = useMemo(() => ({ height: "70%", width: "95%" }), []);
+  const today = new Date().toISOString().split("T");
 
-  // useEffect(() => {
-  //   const fetchData = async () => {
-  //     const { data, error } = await supabase.from("transaction").select();
-  //     if (error) alert(error);
-  //     else setRowData(data);
-  //     setOrderToday(data.length);
-  //     console.log(data);
-  //   };
-  //   fetchData();
-  // }, [supabase]);
+  const [filterDate, setfilterDate] = useState(today);
+
+  const handleFilterDate = (e) => {
+    setfilterDate(e.target.value);
+  };
 
   useEffect(() => {
+    const today = filterDate.toString().split("T")[0];
     const filterOrderToday = async () => {
-      const today = new Date().toISOString().split("T")[0];
+      [0];
       console.log(today);
       const { data, error } = await supabase
         .from("transaction")
         .select()
-        .eq("order_date", today);
+        .eq("order_date", filterDate);
       if (error) {
         console.log(error);
       } else {
@@ -45,7 +42,7 @@ const Dashboard = () => {
     };
 
     filterOrderToday();
-  }, [supabase]);
+  }, [filterDate, supabase]);
 
   const [rowData, setRowData] = useState([
     { name: "", title: "", order_date: "" },
@@ -62,22 +59,31 @@ const Dashboard = () => {
 
   return (
     <div className="w-[100%] h-[100svh] flex flex-col items-center bg-slate-950 gap-2">
+      <input
+        placeholder=""
+        type="date"
+        className="text-white border-zinc-600 border rounded w-[95%] h-10 p-2 mt-2"
+        onChange={handleFilterDate}
+      />
       <div className="flex flex-wrap text-white w-full p-2 gap-2 justify-center">
         <div className="border rounded w-[48%] h-24 border-zinc-600 p-1">
           <h1>order today</h1>
-          <h1>{orderToday}</h1>
+          <h1 className="text-2xl font-semibold text-blue-700">{orderToday}</h1>
         </div>
         <div className="border rounded  w-[48%] h-24 border-zinc-600 p-1 ">
-          <h1>Uang masuk</h1>
-          <h1>{total}</h1>
+          <h1>profit</h1>
+          <h1 className="text-2xl text-lime-500 font-semibold">{total}</h1>
         </div>
       </div>
 
-      <div style={gridStyle} className="the">
+      <div style={gridStyle} className="themematerial !text-white">
         <AgGridReact
           rowData={rowData}
           columnDefs={colDefs}
           theme={themeMaterial}
+          getRowStyle={() => ({
+            backgroundColor: "#020618",
+          })}
         />
       </div>
     </div>
