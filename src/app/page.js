@@ -136,12 +136,18 @@ text-white "
       )}
       <div className="w-full h-[7vh]  flex items-center justify-center gap-2">
         <div
-          className="flex bg-blue-600 w-3/4 justify-center text-white h-[7vh] items-center rounded gap-6"
+          className="flex bg-red-600 w-[25vw] justify-center text-white h-[7vh] items-center rounded gap-6"
+          onClick={handleShowPopUP}
+        >
+          <h1>item {cart.length}</h1>
+        </div>
+        <div
+          className="flex bg-blue-600 w-full justify-center text-white h-[7vh] items-center rounded gap-6"
           onClick={handleShowPopUP}
         >
           <h1>Total : {totalHarga}</h1>
         </div>
-        <div className="bg-blue-600 h-[7vh] text-white w-[10vw] flex items-center justify-center rounded">
+        <div className="bg-blue-600 h-[7vh] text-white w-[20vw] flex items-center justify-center rounded">
           <a href="/dashboard ">list</a>
         </div>
       </div>
