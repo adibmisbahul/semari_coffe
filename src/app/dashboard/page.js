@@ -66,13 +66,17 @@ const Dashboard = () => {
         onChange={handleFilterDate}
       />
       <div className="flex flex-wrap text-white w-full p-2 gap-2 justify-center">
-        <div className="border rounded w-[48%] h-24 border-zinc-600 p-1">
+        <div className="border rounded w-[48%] h-24 border-zinc-600 pl-[4vw] pt-2">
           <h1>order today</h1>
-          <h1 className="text-2xl font-semibold text-blue-700">{orderToday}</h1>
+          <h1 className="text-2xl font-semibold text-blue-700 text-center">
+            {orderToday}
+          </h1>
         </div>
-        <div className="border rounded  w-[48%] h-24 border-zinc-600 p-1 ">
+        <div className="border rounded  w-[48%] h-24 border-zinc-600 pl-[4vw] pt-2">
           <h1>profit</h1>
-          <h1 className="text-2xl text-lime-500 font-semibold">{total}</h1>
+          <h1 className="text-2xl text-lime-500 font-semibold text-center ">
+            {total}
+          </h1>
         </div>
       </div>
 
